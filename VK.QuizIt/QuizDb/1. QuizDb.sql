@@ -9,7 +9,10 @@ go
 use [QuizDb];
 go
 
-create table Person
+create schema app;
+go
+
+create table app.Person
 (
 	[Id] int identity(1, 1) not null constraint pk_person primary key nonclustered,
 	[Login] nvarchar(50) not null unique clustered,
@@ -21,7 +24,7 @@ create table Person
 );
 go
 
-create table Technology
+create table app.Technology
 (
 	[Id] int identity(1, 1) not null constraint pk_technology primary key clustered,
 	[Name] nvarchar(32) not null,
@@ -29,26 +32,25 @@ create table Technology
 );
 go
 
-create table Question
+create table app.Question
 (
 	[Id] int identity(1, 1) not null constraint pk_question primary key clustered,
-	[TechnologyId] int foreign key references [Technology] ([Id]),
+	[TechnologyId] int foreign key references app.[Technology] ([Id]),
 	[Content] nvarchar(max) not null,
 	[AnswerText1] nvarchar(max) not null,
 	[AnswerText2] nvarchar(max) not null,
 	[AnswerText3] nvarchar(max) not null,
 	[AnswerText4] nvarchar(max) not null,
-	[Answer] tinyint not null, /* bit mask field */
 	[TimeToPonderInSeconds] smallint not null,
 	[IsRadioButton] bit default 1 not null,
 	[IsActive] bit default 1 not null
 );
 go
 
-create table Answer
+create table app.Answer
 (
 	[Id] int identity(1, 1) not null constraint pk_answer primary key clustered,
-	[QuestionId] int unique foreign key references [Question] ([Id]),
+	[QuestionId] int unique foreign key references app.[Question] ([Id]),
 	[Grade1] tinyint not null default 0,
 	[Grade2] tinyint not null default 0,
 	[Grade3] tinyint not null default 0,
@@ -56,21 +58,21 @@ create table Answer
 );
 go
 
-create table Quiz
+create table app.Quiz
 (
 	[Id] int identity(1, 1) not null constraint pk_quiz primary key clustered,
-	[PersonId] int foreign key references [Person] ([Id]),
-	[TechnologyId] int foreign key references [Technology] ([Id]),
+	[PersonId] int foreign key references app.[Person] ([Id]),
+	[TechnologyId] int foreign key references app.[Technology] ([Id]),
 	[CommenceDate] datetime2 not null default getdate(),
 	[CompleteDate] datetime2 null,
 	[FinalGrade] float null
 );
 go
 
-create table QuizToQuestion
+create table app.QuizToQuestion
 (
 	[Id] int identity(1, 1) not null constraint pk_questionToQuiz primary key clustered,
-	[QuizId] int foreign key references [Quiz] ([Id]),
-	[QuestionId] int foreign key references [Question] ([Id]),
+	[QuizId] int foreign key references app.[Quiz] ([Id]),
+	[QuestionId] int foreign key references app.[Question] ([Id]),
 );
 go
