@@ -1,4 +1,6 @@
-﻿use [QuizDb];
+﻿/* Script */
+
+use [QuizDb];
 go
 
 /*
